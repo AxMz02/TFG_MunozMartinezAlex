@@ -2,40 +2,40 @@
 Contenidos del archivo.py
 --------------------------
 
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm, expon, uniform, kstest, anderson, chisquare
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.stats import norm, expon, uniform, kstest, anderson, chisquare
 
 # --- Definimos los tests ---
 
-def chi_square_test(data, dist, params, bins=10):
-    observed, bin_edges = np.histogram(data, bins=bins)
-    expected = np.diff(dist.cdf(bin_edges, *params)) * len(data)
-    expected[expected == 0] = 1e-10
-    expected *= observed.sum() / expected.sum()
-    chi2_stat, p_value = chisquare(observed, expected)
-    return chi2_stat, p_value
-
-def ks_test(data, dist, params):
-    D, p_value = kstest(data, dist.cdf, args=params)
-    return D, p_value
-
-def ad_test(data, dist_name):
-    if dist_name == 'norm':
-        result = anderson(data, dist='norm')
-    elif dist_name == 'expon':
-        result = anderson(data, dist='expon')
-    else:
-        return None, None
-    critical_value = result.critical_values[2]  # nivel 5%
-    ad_stat = result.statistic
-    rechaza = ad_stat > critical_value
-    return ad_stat, rechaza
+    def chi_square_test(data, dist, params, bins=10):
+        observed, bin_edges = np.histogram(data, bins=bins)
+        expected = np.diff(dist.cdf(bin_edges, *params)) * len(data)
+        expected[expected == 0] = 1e-10
+        expected *= observed.sum() / expected.sum()
+        chi2_stat, p_value = chisquare(observed, expected)
+        return chi2_stat, p_value
+    
+    def ks_test(data, dist, params):
+        D, p_value = kstest(data, dist.cdf, args=params)
+        return D, p_value
+    
+    def ad_test(data, dist_name):
+        if dist_name == 'norm':
+            result = anderson(data, dist='norm')
+        elif dist_name == 'expon':
+            result = anderson(data, dist='expon')
+        else:
+            return None, None
+        critical_value = result.critical_values[2]  # nivel 5%
+        ad_stat = result.statistic
+        rechaza = ad_stat > critical_value
+        return ad_stat, rechaza
 
 # --- Simulación general ---
 
-def run_simulation(n, n_sim=1000, alpha=0.05, bins=10, dist_null_name='norm'):
-    tests = ['Chi2', 'KS', 'AD']
+    def run_simulation(n, n_sim=1000, alpha=0.05, bins=10, dist_null_name='norm'):
+        tests = ['Chi2', 'KS', 'AD']
     
     if dist_null_name == 'norm':
         dist_null = norm
@@ -108,21 +108,21 @@ def run_simulation(n, n_sim=1000, alpha=0.05, bins=10, dist_null_name='norm'):
     return results
 
 # --- Ejecutamos la simulación para varios tamaños --- NORMAL(0,1)
-n_values = [30, 100, 250]
-n_sim = 1000
-dist_null_name = 'norm'
-
-all_results = {}
-for n in n_values:
-    print(f"\nSimulación para n = {n} normal") #Para ver que tamaños muestrales estamos tomando
-    results = run_simulation(n, n_sim=n_sim, dist_null_name=dist_null_name)
-    all_results[n] = results
+    n_values = [30, 100, 250]
+    n_sim = 1000
+    dist_null_name = 'norm'
+    
+    all_results = {}
+    for n in n_values:
+        print(f"\nSimulación para n = {n} normal") #Para ver que tamaños muestrales estamos tomando
+        results = run_simulation(n, n_sim=n_sim, dist_null_name=dist_null_name)
+        all_results[n] = results
 
 # --- Graficamos resultados --- 
 
-for n in n_values:
-    results = all_results[n]
-    tests = ['Chi2', 'KS', 'AD']
+    for n in n_values:
+        results = all_results[n]
+        tests = ['Chi2', 'KS', 'AD']
 
     # Nivel
     nivel_scenario = 'Nivel (H0)'
@@ -159,21 +159,21 @@ for n in n_values:
 
 
 # --- Ejecutamos la simulación para varios tamaños --- exponencial(0,1)
-n_values = [30, 100, 250]
-n_sim = 1000
-dist_null_name = 'expon'
+    n_values = [30, 100, 250]
+    n_sim = 1000
+    dist_null_name = 'expon'
 
-all_results = {}
-for n in n_values:
-    print(f"\nSimulación para n = {n} exponencial") #Para ver que tamaños muestrales estamos tomando
-    results = run_simulation(n, n_sim=n_sim, dist_null_name=dist_null_name)
-    all_results[n] = results
+    all_results = {}
+    for n in n_values:
+        print(f"\nSimulación para n = {n} exponencial") #Para ver que tamaños muestrales estamos tomando
+        results = run_simulation(n, n_sim=n_sim, dist_null_name=dist_null_name)
+        all_results[n] = results
 
 # --- Graficamos resultados --- 
 
-for n in n_values:
-    results = all_results[n]
-    tests = ['Chi2', 'KS', 'AD']
+    for n in n_values:
+        results = all_results[n]
+        tests = ['Chi2', 'KS', 'AD']
 
     # Nivel
     nivel_scenario = 'Nivel (H0)'
